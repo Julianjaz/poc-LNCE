@@ -1,31 +1,108 @@
-
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
-    <title>Mapa de Puntos</title>
+    <title>Mapa Interactivo</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 600px; }
+        #info { margin-top: 20px; font-family: Arial, sans-serif; }
+    </style>
+    <script>
+        // Esta función obtiene el CSRF token desde la cookie de Django
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+    </script>
+    
 </head>
 <body>
+    <label for="input-valor">Selecciona cabeza bruta:</label>
+        <select id="input-valor" style="margin-bottom: 15px;">
+            <option value="muy_baja">Muy baja caída: 0.5 – 2 m</option>
+            <option value="baja">Baja caída: 2 – 10 m</option>
+            <option value="media">Media caída: 10 – 20 m </option>
+            <option value="alta">Alta caída: > 20 m</option>
+        </select>
+
     <h1>Mapa con puntos personalizados</h1>
-    <div id="map" style="height: 600px;"></div>
+    <div id="map"></div>
+    
+
+    <div id="info">
+        <div class="coord-box">
+            <h3>Coordenadas</h3>
+            <p id="original-coords">--</p>
+        </div>
+        <div class="coord-box">
+            <h3>Potencial Hídrico</h3>
+            <p id="phidrico-valor">--</p>
+        </div>
+    </div>
+    
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        var map = L.map('map').setView([6.25, -75.57], 12);
+        const map = L.map('map').setView([6.25, -75.57], 12);
+        const infoBox = document.getElementById('coords');
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data &copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        fetch('/api/puntos/')
-            .then(response => response.json())
+        // fetch('/api/puntos/') // esto es para mostrar los puntos guardados en bd
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         data.forEach(punto => {
+        //             L.marker([punto.latitud, punto.longitud])
+        //                 .addTo(map)
+        //                 .bindPopup(`<b>${punto.nombre}</b><br>${punto.descripcion}`);
+        //         });
+        //     });
+
+        map.on('click', function(e) {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+
+            const nivelSeleccionado = document.getElementById('input-valor').value;
+
+            fetch('/api/procesar-coordenadas/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({ lat: lat, lng: lng, nivel: nivelSeleccionado })
+            })
+
+            .then(res => res.json())
             .then(data => {
-                data.forEach(punto => {
-                    L.marker([punto.latitud, punto.longitud])
-                        .addTo(map)
-                        .bindPopup(`<b>${punto.nombre}</b><br>${punto.descripcion}`);
-                });
+                
+                document.getElementById('original-coords').textContent = `(${data.lat_original.toFixed(6)}, ${data.lng_original.toFixed(6)})`;
+                document.getElementById('phidrico-valor').textContent = data.P_hidrico.toFixed(2) + " kWh/año";
+                L.marker([data.lat_doble, data.lng_doble])
+                    .addTo(map)
+                    .bindPopup(`<b>${data.guardado_como}</b><br>Procesado automáticamente`);
+            })
+            .catch(error => {
+                console.error(error); 
             });
+        });
     </script>
 </body>
 </html>
