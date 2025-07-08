@@ -5,6 +5,7 @@ from .models import Punto
 from .serializers import PuntoSerializer
 from puntos.utils.process import read_tif
 from puntos.uses_cases.water_potencial import WaterPotencial
+from puntos.uses_cases.biomass_potencial import BiomassPotencial
 
 class PuntoListCreateView(generics.ListCreateAPIView):
     queryset = Punto.objects.all()
@@ -17,9 +18,17 @@ def procesar_coordenadas(request):
     ###########################
     ######### Hidrico #########
     ###########################
-    value_q = read_tif("/Users/julianatehortuazapata/Downloads/mapa_django_app2/puntos/data/caudal.tif", lat, lng)
+    value_q = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/caudal.tif", lat, lng)
     nivel = request.data.get('nivel', 'media')
     p_w = WaterPotencial().calculate(value_q,nivel)
+    ###########################
+
+    ###########################
+    ######### Biomasa #########
+    ###########################
+    value_ren = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/aguacate.tif", lat, lng)
+    area = float(request.data.get('area', 0))
+    p_b = BiomassPotencial().calculate(area,value_ren)
     ###########################
 
     punto = Punto.objects.create(
@@ -33,5 +42,6 @@ def procesar_coordenadas(request):
         'lat_original': lat,
         'lng_original': lng,
         'P_hidrico': p_w,
+        'P_biomass': p_b,
         'guardado_como': punto.nombre
     })

@@ -9,8 +9,8 @@ class WaterPotencial:
         #hg # usuario opciones
         h_hydr = 0.02 #Pérdidas hidráulicas
         h_tail = 0.7 # Pérdidas  descarga 
-        et = 0.84*100 #TODO: DEBE SER PORCENTAJE #Eficiencia de la turbina 
-        eg = 0.94*100 #TODO: DEBE SER PORCENTAJE #Eficiencia de la generador 
+        et = 0.84 #TODO: DEBE SER PORCENTAJE #Eficiencia de la turbina 
+        eg = 0.94 #TODO: DEBE SER PORCENTAJE #Eficiencia de la generador 
         t_trans = 0.0075 #Pérdidas del transformador 
         l_para = 0.075 #Pérdidas por parada o inactividad de la planta
 

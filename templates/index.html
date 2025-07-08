@@ -39,6 +39,9 @@
             <option value="media">Media caída: 10 – 20 m </option>
             <option value="alta">Alta caída: > 20 m</option>
         </select>
+        <label for="input-area">Área del proyecto (m²):</label>
+        <input type="number" id="input-area" min="0" step="0.01" style="margin-bottom: 15px;">
+
 
     <h1>Mapa con puntos personalizados</h1>
     <div id="map"></div>
@@ -52,6 +55,10 @@
         <div class="coord-box">
             <h3>Potencial Hídrico</h3>
             <p id="phidrico-valor">--</p>
+        </div>
+        <div class="coord-box">
+            <h3>Potencial Biomasa ( Aguacate )</h3>
+            <p id="pbiomasa-valor">--</p>
         </div>
     </div>
     
@@ -80,6 +87,8 @@
             const lng = e.latlng.lng;
 
             const nivelSeleccionado = document.getElementById('input-valor').value;
+            const area = parseFloat(document.getElementById('input-area').value || 0);
+
 
             fetch('/api/procesar-coordenadas/', {
                 method: 'POST',
@@ -87,7 +96,7 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrftoken
                 },
-                body: JSON.stringify({ lat: lat, lng: lng, nivel: nivelSeleccionado })
+                body: JSON.stringify({ lat: lat, lng: lng, nivel: nivelSeleccionado, area: area })
             })
 
             .then(res => res.json())
@@ -95,6 +104,7 @@
                 
                 document.getElementById('original-coords').textContent = `(${data.lat_original.toFixed(6)}, ${data.lng_original.toFixed(6)})`;
                 document.getElementById('phidrico-valor').textContent = data.P_hidrico.toFixed(2) + " kWh/año";
+                document.getElementById('pbiomasa-valor').textContent =data.P_biomass.toFixed(2) + " kWh/año";
                 L.marker([data.lat_doble, data.lng_doble])
                     .addTo(map)
                     .bindPopup(`<b>${data.guardado_como}</b><br>Procesado automáticamente`);
