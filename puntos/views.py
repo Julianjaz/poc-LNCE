@@ -6,6 +6,7 @@ from .serializers import PuntoSerializer
 from puntos.utils.process import read_tif
 from puntos.uses_cases.water_potencial import WaterPotencial
 from puntos.uses_cases.biomass_potencial import BiomassPotencial
+from puntos.uses_cases.solar_potencial import SolarPotencial
 
 class PuntoListCreateView(generics.ListCreateAPIView):
     queryset = Punto.objects.all()
@@ -31,6 +32,16 @@ def procesar_coordenadas(request):
     p_b = BiomassPotencial().calculate(area,value_ren)
     ###########################
 
+    ###########################
+    ######### Solar #########
+    ###########################
+    value_sb = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/radiacion_sb.tif", lat, lng)
+    value_re = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/radiacion_re.tif", lat, lng)
+    value_t2m = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/T2M_mean.tif", lat, lng)
+    area = float(request.data.get('area', 0))
+    p_s = SolarPotencial().calculate(area,value_re,value_sb,value_t2m)
+    ###########################
+
     punto = Punto.objects.create(
         nombre="Punto generado",
         descripcion="Coordenadas desde clic",
@@ -43,5 +54,6 @@ def procesar_coordenadas(request):
         'lng_original': lng,
         'P_hidrico': p_w,
         'P_biomass': p_b,
+        'P_solar': p_s,
         'guardado_como': punto.nombre
     })

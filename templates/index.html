@@ -60,6 +60,11 @@
             <h3>Potencial Biomasa ( Aguacate )</h3>
             <p id="pbiomasa-valor">--</p>
         </div>
+
+        <div class="coord-box">
+            <h3>Potencial Solar ( JAP6 72 320 4BB 320W )</h3>
+            <p id="psolar-valor">--</p>
+        </div>
     </div>
     
 
@@ -105,6 +110,7 @@
                 document.getElementById('original-coords').textContent = `(${data.lat_original.toFixed(6)}, ${data.lng_original.toFixed(6)})`;
                 document.getElementById('phidrico-valor').textContent = data.P_hidrico.toFixed(2) + " kWh/año";
                 document.getElementById('pbiomasa-valor').textContent =data.P_biomass.toFixed(2) + " kWh/año";
+                document.getElementById('psolar-valor').textContent =data.P_solar.toFixed(2) + " kWh/año";
                 L.marker([data.lat_doble, data.lng_doble])
                     .addTo(map)
                     .bindPopup(`<b>${data.guardado_como}</b><br>Procesado automáticamente`);
