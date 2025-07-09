@@ -41,9 +41,15 @@
         </select>
         <label for="input-area">Área del proyecto (m²):</label>
         <input type="number" id="input-area" min="0" step="0.01" style="margin-bottom: 15px;">
+        <label for="input-altura-buje">Altura Buje:</label>
+        <input type="number" id="input-altura-buje" min="0" step="0.01" style="margin-bottom: 15px;">
+        <label for="input-alpha">Alpha:</label>
+        <input type="number" id="input-alpha" min="0" step="0.01" style="margin-bottom: 15px;">
+        <label for="input-coef-friccion">Coeficiente de friccion:</label>
+        <input type="number" id="input-coef-friccion" min="0" step="0.01" style="margin-bottom: 15px;">
 
 
-    <h1>Mapa con puntos personalizados</h1>
+    <h1>Mapa de potenciales energeticos</h1>
     <div id="map"></div>
     
 
@@ -64,6 +70,11 @@
         <div class="coord-box">
             <h3>Potencial Solar ( JAP6 72 320 4BB 320W )</h3>
             <p id="psolar-valor">--</p>
+        </div>
+
+        <div class="coord-box">
+            <h3>Potencial eolica (10 metros)</h3>
+            <p id="pwind-valor">--</p>
         </div>
     </div>
     
@@ -93,6 +104,9 @@
 
             const nivelSeleccionado = document.getElementById('input-valor').value;
             const area = parseFloat(document.getElementById('input-area').value || 0);
+            const alturabuje = parseFloat(document.getElementById('input-altura-buje').value || 0);
+            const alpha = parseFloat(document.getElementById('input-alpha').value || 0);
+            const coeffriccion = parseFloat(document.getElementById('input-coef-friccion').value || 0);
 
 
             fetch('/api/procesar-coordenadas/', {
@@ -101,7 +115,7 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrftoken
                 },
-                body: JSON.stringify({ lat: lat, lng: lng, nivel: nivelSeleccionado, area: area })
+                body: JSON.stringify({ lat: lat, lng: lng, nivel: nivelSeleccionado, area: area, alturabuje: alturabuje, alpha: alpha, coeffriccion:coeffriccion})
             })
 
             .then(res => res.json())
@@ -111,6 +125,7 @@
                 document.getElementById('phidrico-valor').textContent = data.P_hidrico.toFixed(2) + " kWh/año";
                 document.getElementById('pbiomasa-valor').textContent =data.P_biomass.toFixed(2) + " kWh/año";
                 document.getElementById('psolar-valor').textContent =data.P_solar.toFixed(2) + " kWh/año";
+                document.getElementById('pwind-valor').textContent =data.P_wind.toFixed(2) + " kWh/año";
                 L.marker([data.lat_doble, data.lng_doble])
                     .addTo(map)
                     .bindPopup(`<b>${data.guardado_como}</b><br>Procesado automáticamente`);

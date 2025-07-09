@@ -7,12 +7,12 @@ class WaterPotencial:
         g = 9.81 # Aceleración de la gravedad
         #q # Caudal ingresado por el usuario
         #hg # usuario opciones
-        h_hydr = 0.02 #Pérdidas hidráulicas
-        h_tail = 0.7 # Pérdidas  descarga 
-        et = 0.84 #TODO: DEBE SER PORCENTAJE #Eficiencia de la turbina 
-        eg = 0.94 #TODO: DEBE SER PORCENTAJE #Eficiencia de la generador 
-        t_trans = 0.0075 #Pérdidas del transformador 
-        l_para = 0.075 #Pérdidas por parada o inactividad de la planta
+        h_hydr = 0.02 #Pérdidas hidráulicas(CONSTANTE YA DEFINIDA SE TOMA VALOR MEDIO)
+        h_tail = 0.7 # Pérdidas  descarga (CONSTANTE YA DEFINIDA SE TOMA VALOR MEDIO)
+        et = 0.84 #TODO: DEBE SER PORCENTAJE #Eficiencia de la turbina (CONSTANTE YA DEFINIDA SE TOMA VALOR MEDIO)
+        eg = 0.94 #TODO: DEBE SER PORCENTAJE #Eficiencia de la generador (CONSTANTE YA DEFINIDA SE TOMA VALOR MEDIO)
+        t_trans = 0.0075 #Pérdidas del transformador  (CONSTANTE YA DEFINIDA SE TOMA VALOR MEDIO)
+        l_para = 0.075 #Pérdidas por parada o inactividad de la planta (CONSTANTE YA DEFINIDA SE TOMA VALOR MEDIO)
 
         if nivel =="muy_baja":
             hg = 1
