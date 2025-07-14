@@ -22,7 +22,7 @@ def procesar_coordenadas(request):
     ###########################
     value_q = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/caudal.tif", lat, lng)
     nivel = request.data.get('nivel', 'media')
-    p_w = WaterPotencial().calculate(value_q,nivel)
+    p_h = WaterPotencial().calculate(value_q,nivel)
     ###########################
 
     ###########################
@@ -65,7 +65,7 @@ def procesar_coordenadas(request):
     return Response({
         'lat_original': lat,
         'lng_original': lng,
-        'P_hidrico': p_w,
+        'P_hidrico': p_h,
         'P_biomass': p_b,
         'P_solar': p_s,
         'P_wind': p_w,
