@@ -22,10 +22,26 @@ class WaterPotencial:
             hg = 15
         elif nivel == "alta":
             hg = 20
-
-        print("caudal",q)
-
+  
         e_gen =  p*g*q*(hg-(h_hydr+h_tail))*et*eg*(1-t_trans)*(1-l_para)*8760
+
+        print("==="*30)
+        print("Variables hidrico")
+        print("==="*30)
+        print("p:", p)
+        print("g:", g)
+        print("h_hydr:", h_hydr)
+        print("h_tail:", h_tail)
+        print("et:", et)
+        print("eg:", eg)
+        print("t_trans",t_trans)
+        print("l_para:", l_para)
+        print("-----variables de entrada----")
+        print("caudal",q)
+        print("nivel",nivel)
+        print("  ---Resultado----")
+        print("  e_gen:", e_gen)
+        print("----"*30)     
 
         return e_gen/1000
     

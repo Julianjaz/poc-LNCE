@@ -26,18 +26,26 @@ def procesar_coordenadas(request):
     ###########################
 
     ###########################
-    ######### Biomasa #########
+    #### Biomasa Aguacate######
     ###########################
     value_ren = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/aguacate.tif", lat, lng)
     area = float(request.data.get('area', 0))
-    p_b = BiomassPotencial().calculate(area,value_ren)
+    p_b = BiomassPotencial().agricultural_calculate(area,value_ren)
+    ###########################
+
+    ###########################
+    #### Biomasa Bovinos#######
+    ###########################
+    # value_cabezas = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/bovinos.tif", lat, lng)
+    num_cabezas = float(request.data.get('numcabezas', 0))
+    p_b_pecuario = BiomassPotencial().pecuario_calculate(num_cabezas)
     ###########################
 
     ###########################
     ######### Solar #########
     ###########################
     value_sb = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/radiacion_sb.tif", lat, lng)
-    value_re = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/radiacion_re.tif", lat, lng)
+    value_re = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/radiacion_ideam.tif", lat, lng)
     value_t2m = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/T2M_mean.tif", lat, lng)
     area = float(request.data.get('area', 0))
     p_s = SolarPotencial().calculate(area,value_re,value_sb,value_t2m)
@@ -49,9 +57,9 @@ def procesar_coordenadas(request):
     value_ps = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/PS_mean.tif", lat, lng)
     value_vel = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/wind_speed_COL_10.tif", lat, lng)
     value_t2m = read_tif("/Users/julianatehortuazapata/Desktop/github/poc-LNCE/puntos/data/T2M_mean.tif", lat, lng)
-    altura_buje = float(request.data.get('altura_buje', 0))
+    altura_buje = float(request.data.get('alturabuje', 0))
     alpha = float(request.data.get('alpha', 0))
-    coef_friccion = float(request.data.get('coef_friccion', 0))
+    coef_friccion = float(request.data.get('coeffriccion', 0))
     p_w = WindPotencial().calculate(value_ps, value_t2m, value_vel, altura_buje, alpha, coef_friccion)
     ###########################
 
@@ -67,6 +75,7 @@ def procesar_coordenadas(request):
         'lng_original': lng,
         'P_hidrico': p_h,
         'P_biomass': p_b,
+        'P_biomass_pecuario': p_b_pecuario,
         'P_solar': p_s,
         'P_wind': p_w,
         'guardado_como': punto.nombre
