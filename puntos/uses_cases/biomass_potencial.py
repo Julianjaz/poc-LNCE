@@ -9,7 +9,7 @@ class BiomassPotencial:
         pci = 14600 # TODO: este solo es el caso del aguacate, luego toca generar tabla de referencias
         fgr_agricola = 0.18 #TODO: solo para el aguacate, luego toca generar tabla de referencias
         mb = a_cultivo * rendimiento * fgr_agricola
-        b_potencial = mb * pci * n_e*1/3600
+        b_potencial = mb * pci * n_e*1/3600*1000
         print("==="*30)
         print("Variables biomasa")
         print("==="*30)
@@ -32,7 +32,7 @@ class BiomassPotencial:
         pci = 18895 # TODO: este solo es el caso de los bovinos, luego toca generar tabla de referencias
         fgr_pecuario = 1.59 #TODO: solo para bovinos, luego toca generar tabla de referencias
         mb = cabezas * fgr_pecuario
-        b_potencial = mb * pci * n_e
+        b_potencial = mb * pci * n_e*1/3600*1000
         print("==="*30)
         print("Variables biomasa pecuario")
         print("==="*30)
